@@ -1,0 +1,12 @@
+{
+    "name": "backbone.organic",
+    "version": "0.0.3",
+    "dependencies": {
+        "backbone": "1.0.0 - 1.1.2",
+        "underscore": "1.4.4 - 1.6.0",
+        "jquery": "^1.8.0 || ^2.0.0"
+    },
+    "devDependencies": {
+        "sinonjs": "1.7.3"
+    }
+}
