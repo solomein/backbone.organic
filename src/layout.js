@@ -100,4 +100,4 @@ Organic.Layout = Organic.View.extend({
     }
 });
 
-Organic.mixMerge(Organic.Layout, Backbone.BaseView, ['regionsDecl']);
+Organic.mixMerge(Organic.Layout, Organic.BaseView, ['regionsDecl']);

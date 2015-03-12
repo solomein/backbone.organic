@@ -16,7 +16,7 @@
         "min":  "dist/umd/backbone.organic.min.js"
     },
     "src": {
-        "all": ["src/**/*.js", "*.js", "test/**/*.js"],
+        "all": ["src/**/*.js", "*.js", "test/unit/**/*.js"],
         "organic": "src/**/*.js",
         "spec": "test/unit/**/*.js"
     },

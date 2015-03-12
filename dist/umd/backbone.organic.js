@@ -434,22 +434,34 @@
         
                 options = options || {};
                 var isDifferentView = view !== this.currentView,
+                    isChangingView = !!this.currentView,
                     shouldDestroyView = isDifferentView && !options.preventDestroy,
                     shouldShowView = isDifferentView || options.forceShow;
         
                 if (shouldDestroyView) {
                     this.empty();
                 }
+                else if (isChangingView && shouldShowView) {
+                    this.currentView.off('destroy', this.empty, this);
+                }
         
                 if (shouldShowView) {
                     view.once('destroy', this.empty, this);
                     view.render();
+        
+                    if (isChangingView) {
+                        this.triggerMethod('before:swap', view);
+                    }
         
                     this.triggerMethod('before:show', view);
                     Organic.triggerMethodOn(view, 'before:show');
         
                     this.attachViewHtml(view);
                     this.currentView = view;
+        
+                    if (isChangingView) {
+                        this.triggerMethod('swap', view);
+                    }
         
                     this.triggerMethod('show', view);
                     Organic.triggerMethodOn(view, 'show');
@@ -1012,7 +1024,7 @@
             }
         });
         
-        Organic.mixMerge(Organic.Layout, Backbone.BaseView, ['regionsDecl']);
+        Organic.mixMerge(Organic.Layout, Organic.BaseView, ['regionsDecl']);
         
     
         /**
@@ -1257,17 +1269,7 @@
         
             destroy: function () {
                 this._callBeforeDestroy.apply(this, arguments);
-        
-                if (this.slotManager) {
-                    this.slotManager.destroy();
-                    delete this.slotManager;
-                }
-        
-                if (this.view) {
-                    this.unbindEntityEvents(this.view, this.viewEvents);
-                    this.view.destroy();
-                    delete this.view;
-                }
+                this._destroyInternalInstances();
         
                 return Organic.Emitter.prototype.destroy.apply(this, arguments);
             },
@@ -1288,6 +1290,19 @@
                 if (this.view) {
                     this._initSlots();
                     this.bindEntityEvents(this.view, this.viewEvents);
+                }
+            },
+        
+            _destroyInternalInstances: function () {
+                if (this.slotManager) {
+                    this.slotManager.destroy();
+                    delete this.slotManager;
+                }
+        
+                if (this.view) {
+                    this.unbindEntityEvents(this.view, this.viewEvents);
+                    this.view.destroy();
+                    delete this.view;
                 }
             },
         
@@ -1340,23 +1355,6 @@
          * @augments Organic.SlotKeeper
          */
         Organic.Block = Organic.SlotKeeper.extend({
-            destroy: function () {
-                this._callBeforeDestroy.apply(this, arguments);
-        
-                if (this.model) {
-                    this.unbindEntityEvents(this.model, this.modelEvents);
-                    delete this.model;
-                }
-        
-                if (this.collection) {
-                    this.unbindEntityEvents(this.collection, this.collectionEvents);
-                    this.collection.reset();
-                    delete this.collection;
-                }
-        
-                return Organic.SlotKeeper.prototype.destroy.apply(this, arguments);
-            },
-        
             getCollectionClass: function () {
                 return this.collectionClass;
             },
@@ -1391,6 +1389,21 @@
                 }
         
                 return Organic.SlotKeeper.prototype._createInternalInstances.apply(this, arguments);
+            },
+        
+            _destroyInternalInstances: function () {
+                if (this.model) {
+                    this.unbindEntityEvents(this.model, this.modelEvents);
+                    delete this.model;
+                }
+        
+                if (this.collection) {
+                    this.unbindEntityEvents(this.collection, this.collectionEvents);
+                    this.collection.reset();
+                    delete this.collection;
+                }
+        
+                return Organic.SlotKeeper.prototype._destroyInternalInstances.apply(this, arguments);
             },
         
             _createModel: function () {
@@ -1435,21 +1448,24 @@
          * @augments Organic.SlotKeeper
          */
         Organic.Bundle = Organic.SlotKeeper.extend({
-            constructor: function (args) {
-                if (!args || !args.region) {
+            lazy: true,
+        
+            constructor: function (options) {
+                this.options = options || {};
+                this.region = this.getOption('region');
+        
+                if (!this.region) {
                     Organic.throwError('Region in not defined', 'BundleInitError');
                 }
         
-                _.bindAll(this, '_onBeforeRoute', '_onViewClose');
+                _.bindAll(this, '_onBeforeRoute', '_onRegionSwap');
         
-                this.view = args.view;
-                this.region = args.region;
                 this.isActive = false;
                 this._routers = {};
         
-                Organic.SlotKeeper.call(this, args.options);
+                this.listenTo(this.region, 'swap', this._onRegionSwap);
         
-                this.listenTo(this.view, 'close', this._onViewClose);
+                Organic.SlotKeeper.call(this, this.options);
             },
         
             initRouter: function (routerName) {
@@ -1482,6 +1498,10 @@
                     return;
                 }
         
+                /** Reinitialize internal instances */
+                this._destroyInternalInstances();
+                this._createInternalInstances();
+        
                 this.region.show(this.view);
                 this.isActive = true;
                 this.triggerMethod('render');
@@ -1491,7 +1511,7 @@
                 }, this);
             },
         
-            _onViewClose: function () {
+            _onRegionSwap: function () {
                 this.isActive = false;
             },
         

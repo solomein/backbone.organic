@@ -4,23 +4,6 @@
  * @augments Organic.SlotKeeper
  */
 Organic.Block = Organic.SlotKeeper.extend({
-    destroy: function () {
-        this._callBeforeDestroy.apply(this, arguments);
-
-        if (this.model) {
-            this.unbindEntityEvents(this.model, this.modelEvents);
-            delete this.model;
-        }
-
-        if (this.collection) {
-            this.unbindEntityEvents(this.collection, this.collectionEvents);
-            this.collection.reset();
-            delete this.collection;
-        }
-
-        return Organic.SlotKeeper.prototype.destroy.apply(this, arguments);
-    },
-
     getCollectionClass: function () {
         return this.collectionClass;
     },
@@ -55,6 +38,21 @@ Organic.Block = Organic.SlotKeeper.extend({
         }
 
         return Organic.SlotKeeper.prototype._createInternalInstances.apply(this, arguments);
+    },
+
+    _destroyInternalInstances: function () {
+        if (this.model) {
+            this.unbindEntityEvents(this.model, this.modelEvents);
+            delete this.model;
+        }
+
+        if (this.collection) {
+            this.unbindEntityEvents(this.collection, this.collectionEvents);
+            this.collection.reset();
+            delete this.collection;
+        }
+
+        return Organic.SlotKeeper.prototype._destroyInternalInstances.apply(this, arguments);
     },
 
     _createModel: function () {

@@ -13,17 +13,7 @@ Organic.SlotKeeper = Organic.Emitter.extend({
 
     destroy: function () {
         this._callBeforeDestroy.apply(this, arguments);
-
-        if (this.slotManager) {
-            this.slotManager.destroy();
-            delete this.slotManager;
-        }
-
-        if (this.view) {
-            this.unbindEntityEvents(this.view, this.viewEvents);
-            this.view.destroy();
-            delete this.view;
-        }
+        this._destroyInternalInstances();
 
         return Organic.Emitter.prototype.destroy.apply(this, arguments);
     },
@@ -44,6 +34,19 @@ Organic.SlotKeeper = Organic.Emitter.extend({
         if (this.view) {
             this._initSlots();
             this.bindEntityEvents(this.view, this.viewEvents);
+        }
+    },
+
+    _destroyInternalInstances: function () {
+        if (this.slotManager) {
+            this.slotManager.destroy();
+            delete this.slotManager;
+        }
+
+        if (this.view) {
+            this.unbindEntityEvents(this.view, this.viewEvents);
+            this.view.destroy();
+            delete this.view;
         }
     },
 

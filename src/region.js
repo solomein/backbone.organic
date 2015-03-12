@@ -74,22 +74,34 @@ _.extend(Organic.Region.prototype, Backbone.Events, {
 
         options = options || {};
         var isDifferentView = view !== this.currentView,
+            isChangingView = !!this.currentView,
             shouldDestroyView = isDifferentView && !options.preventDestroy,
             shouldShowView = isDifferentView || options.forceShow;
 
         if (shouldDestroyView) {
             this.empty();
         }
+        else if (isChangingView && shouldShowView) {
+            this.currentView.off('destroy', this.empty, this);
+        }
 
         if (shouldShowView) {
             view.once('destroy', this.empty, this);
             view.render();
+
+            if (isChangingView) {
+                this.triggerMethod('before:swap', view);
+            }
 
             this.triggerMethod('before:show', view);
             Organic.triggerMethodOn(view, 'before:show');
 
             this.attachViewHtml(view);
             this.currentView = view;
+
+            if (isChangingView) {
+                this.triggerMethod('swap', view);
+            }
 
             this.triggerMethod('show', view);
             Organic.triggerMethodOn(view, 'show');

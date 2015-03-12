@@ -4,21 +4,24 @@
  * @augments Organic.SlotKeeper
  */
 Organic.Bundle = Organic.SlotKeeper.extend({
-    constructor: function (args) {
-        if (!args || !args.region) {
+    lazy: true,
+
+    constructor: function (options) {
+        this.options = options || {};
+        this.region = this.getOption('region');
+
+        if (!this.region) {
             Organic.throwError('Region in not defined', 'BundleInitError');
         }
 
-        _.bindAll(this, '_onBeforeRoute', '_onViewClose');
+        _.bindAll(this, '_onBeforeRoute', '_onRegionSwap');
 
-        this.view = args.view;
-        this.region = args.region;
         this.isActive = false;
         this._routers = {};
 
-        Organic.SlotKeeper.call(this, args.options);
+        this.listenTo(this.region, 'swap', this._onRegionSwap);
 
-        this.listenTo(this.view, 'close', this._onViewClose);
+        Organic.SlotKeeper.call(this, this.options);
     },
 
     initRouter: function (routerName) {
@@ -51,6 +54,10 @@ Organic.Bundle = Organic.SlotKeeper.extend({
             return;
         }
 
+        /** Reinitialize internal instances */
+        this._destroyInternalInstances();
+        this._createInternalInstances();
+
         this.region.show(this.view);
         this.isActive = true;
         this.triggerMethod('render');
@@ -60,7 +67,7 @@ Organic.Bundle = Organic.SlotKeeper.extend({
         }, this);
     },
 
-    _onViewClose: function () {
+    _onRegionSwap: function () {
         this.isActive = false;
     },
 
