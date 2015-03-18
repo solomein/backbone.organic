@@ -1,6 +1,20 @@
 {
   "name": "backbone.organic",
+  "description": "The Backbone Framework",
   "version": "0.0.5",
+  "main": "dist/umd/backbone.organic.js",
+  "license": "MIT",
+  "author": {
+    "name": "Leonid Solomein",
+    "email": "leonid.solomein@gmail.com"
+  },
+  "bugs": {
+    "url": "https://github.com/solomein/backbone.organic/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/solomein/backbone.organic.git"
+  },
   "dependencies": {
     "backbone": "1.0.0 - 1.1.2",
     "underscore": "^1.6.0"

@@ -26,5 +26,14 @@ sftp-config.json
 node_modules/
 bower_components/
 coverage/
-test/src/
 npm-debug.log
+
+### npm
+src
+test
+.gitignore
+.jshintrc
+.jscs
+bower.json
+paths.json
+Gruntfile.js
