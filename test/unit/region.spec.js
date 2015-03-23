@@ -467,8 +467,8 @@ describe('Organic.Region', function () {
         it('should not throw an error saying the views been destroyed if a destroyed view is passed in', function () {
             expect(function () {
                 this.myRegion.show();
-            }).not.to.throw(new Error('View (cid: "' + this.view.cid +
-                '") has already been destroyed and cannot be used.'));
+            }).not.to.throw(new Error('View (cid: "' + this.view.cid
+                + '") has already been destroyed and cannot be used.'));
         });
     });
 

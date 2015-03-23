@@ -1,8 +1,29 @@
-var Organic = (function (global, Backbone, _) {
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        define(['backbone', 'underscore'], function (Backbone, _) {
+            return (root.Organic = factory(root, Backbone, _));
+        });
+    }
+    else if (typeof exports !== 'undefined') {
+        var Backbone = require('backbone'),
+            _ = require('underscore');
+        module.exports = factory(root, Backbone, _);
+    }
+    else {
+        root.Organic = factory(root, root.Backbone, root._);
+    }
+}(this, function (root, Backbone, _) {
     'use strict';
 
-    var Organic = {};
-    Backbone.Organic = Organic;
+    var previousOrganic = root.Organic;
+
+    var Organic = Backbone.Organic = {};
+
+    Organic.noConflict = function () {
+        root.Organic = previousOrganic;
+
+        return this;
+    };
 
     Organic.Deferred = Backbone.$.Deferred;
 
@@ -1514,4 +1535,4 @@ var Organic = (function (global, Backbone, _) {
     
 
     return Organic;
-})(this, Backbone, _);
+}));

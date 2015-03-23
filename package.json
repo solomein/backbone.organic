@@ -2,7 +2,7 @@
   "name": "backbone.organic",
   "description": "The Backbone Framework",
   "version": "0.0.5",
-  "main": "dist/umd/backbone.organic.js",
+  "main": "dist/backbone.organic.js",
   "license": "MIT",
   "author": {
     "name": "Leonid Solomein",

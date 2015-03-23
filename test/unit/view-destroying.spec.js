@@ -48,8 +48,8 @@ describe('Destroying views', function () {
         });
 
         it('should throw an error', function () {
-            expect(this.view.render).to.throw('View (cid: "' + this.view.cid +
-                '") has already been destroyed and cannot be used.');
+            expect(this.view.render).to.throw('View (cid: "' + this.view.cid
+                + '") has already been destroyed and cannot be used.');
         });
     });
 
@@ -80,8 +80,8 @@ describe('Destroying views', function () {
         });
 
         it('should throw an error', function () {
-            expect(this.layout.render).to.throw('View (cid: "' + this.layout.cid +
-                '") has already been destroyed and cannot be used.');
+            expect(this.layout.render).to.throw('View (cid: "' + this.layout.cid
+                + '") has already been destroyed and cannot be used.');
         });
     });
 });

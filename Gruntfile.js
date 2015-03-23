@@ -12,10 +12,6 @@ module.exports = function (grunt) {
             core: {
                 src: paths.core.src,
                 dest: paths.core.dist
-            },
-            umd: {
-                src: paths.umd.src,
-                dest: paths.umd.dist
             }
         },
 
@@ -23,10 +19,6 @@ module.exports = function (grunt) {
             core: {
                 src: paths.core.dist,
                 dest: paths.core.min
-            },
-            umd: {
-                src: paths.umd.dist,
-                dest: paths.umd.min
             }
         },
 

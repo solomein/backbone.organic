@@ -33,7 +33,7 @@ src
 test
 .gitignore
 .jshintrc
-.jscs
+.jscsrc
 bower.json
 paths.json
 Gruntfile.js

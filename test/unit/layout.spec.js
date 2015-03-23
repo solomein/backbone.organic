@@ -124,6 +124,7 @@ describe('Organic.Layout', function () {
                 template: '#foo',
                 regionsDecl: function (opts) {
                     self.options = opts;
+
                     return {
                         'foo': '#bar'
                     };
@@ -290,8 +291,8 @@ describe('Organic.Layout', function () {
         });
 
         it('should throw an error', function () {
-            expect(this.layoutView.render).to.throw('View (cid: "' + this.layoutView.cid +
-                '") has already been destroyed and cannot be used.');
+            expect(this.layoutView.render).to.throw('View (cid: "' + this.layoutView.cid
+                + '") has already been destroyed and cannot be used.');
         });
     });
 
@@ -333,6 +334,7 @@ describe('Organic.Layout', function () {
             this.layout = new(Organic.Layout.extend({
                 getRegionManager: function () {
                     self.spy.apply(this, arguments);
+
                     return new Organic.RegionManager();
                 }
             }))();
