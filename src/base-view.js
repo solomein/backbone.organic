@@ -197,4 +197,4 @@ Organic.BaseView = Backbone.View.extend({
     unbindEntityEvents: Organic.proxyUnbindEntityEvents
 });
 
-Organic.mixMerge(Organic.BaseView, Backbone.View, ['ui', 'triggers']);
+Organic.mixMerge(Organic.BaseView, Backbone.View, ['ui', 'triggers', 'modelEvents', 'collectionEvents']);

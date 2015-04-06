@@ -33,7 +33,6 @@ global._ = require('underscore');
 global.Backbone = require('backbone');
 global.Backbone.$ = global.$;
 global.Organic = Backbone.Organic = {};
-Organic.Deferred = global.Backbone.$.Deferred;
 
 requireHelper('internal/helpers');
 requireHelper('internal/normalize');
@@ -41,6 +40,7 @@ requireHelper('internal/trigger-method');
 requireHelper('internal/dom-refresh');
 requireHelper('internal/bind-entity-events');
 requireHelper('internal/merge');
+requireHelper('internal/queue');
 
 requireHelper('emitter');
 requireHelper('region');
@@ -52,6 +52,7 @@ requireHelper('base-view');
 requireHelper('view');
 requireHelper('layout');
 
+requireHelper('history');
 requireHelper('router');
 
 requireHelper('slot');

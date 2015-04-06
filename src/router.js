@@ -25,6 +25,7 @@ Organic.Router = Backbone.Router.extend({
 
         var wrappedRoute = _.bind(function () {
             this.trigger('before:route');
+            Organic.history.add(window.location.hash);
             callback.apply(this, arguments);
         }, this);
 

@@ -25,14 +25,13 @@
         return this;
     };
 
-    Organic.Deferred = Backbone.$.Deferred;
-
     // @include ../internal/helpers.js
     // @include ../internal/normalize.js
     // @include ../internal/trigger-method.js
     // @include ../internal/dom-refresh.js
     // @include ../internal/bind-entity-events.js
     // @include ../internal/merge.js
+    // @include ../internal/queue.js
 
     // @include ../emitter.js
     // @include ../region.js
@@ -44,6 +43,7 @@
     // @include ../view.js
     // @include ../layout.js
 
+    // @include ../history.js
     // @include ../router.js
 
     // @include ../slot.js

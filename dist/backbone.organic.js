@@ -25,8 +25,6 @@
         return this;
     };
 
-    Organic.Deferred = Backbone.$.Deferred;
-
     Organic.extend = Backbone.Model.extend;
     
     Organic.noop = function () {};
@@ -330,6 +328,37 @@
         Organic.mixMerge(Backbone.View, ['events']);
         Organic.mixMerge(Backbone.Router);
     })(Organic);
+    
+    Organic.Queue = function (len) {
+        this.queueLen = len || 2;
+        this.queue = new Array(this.queueLen);
+    };
+    
+    _.extend(Organic.Queue.prototype, {
+        add: function () {
+            if (this.queue.length >= this.queueLen) {
+                this.queue.shift();
+            }
+    
+            this.queue.push(this.process.apply(this, _.rest(arguments, 0)));
+    
+            return this;
+        },
+    
+        process: function () {
+            return arguments[0];
+        },
+    
+        getPrevious: function () {
+            return this.queue[this.queueLen - 2];
+        },
+    
+        getLast: function () {
+            return this.queue[this.queueLen - 1];
+        }
+    });
+    
+    Organic.Queue.extend = Backbone.Model.extend;
     
 
     /**
@@ -871,7 +900,7 @@
         unbindEntityEvents: Organic.proxyUnbindEntityEvents
     });
     
-    Organic.mixMerge(Organic.BaseView, Backbone.View, ['ui', 'triggers']);
+    Organic.mixMerge(Organic.BaseView, Backbone.View, ['ui', 'triggers', 'modelEvents', 'collectionEvents']);
     
     /**
      * @class
@@ -1037,6 +1066,53 @@
 
     /**
      * @class
+     * @augments Organic.Queue
+     */
+    Organic.History = Organic.Queue.extend({
+        constructor: function () {
+            this.history = Backbone.history;
+            this.defaultFragment = null;
+    
+            Organic.Queue.call(this);
+        },
+    
+        add: function (fragment) {
+            if (this.getLast() !== fragment) {
+                Organic.Queue.prototype.add.call(this, fragment);
+            }
+    
+            return this;
+        },
+    
+        back: function () {
+            var fragment = this.getPrevious() || this.defaultFragment;
+    
+            return this.navigate(fragment, {trigger: true});
+        },
+    
+        navigate: function (fragment, options) {
+            this.history.navigate(fragment, options);
+    
+            return this;
+        },
+    
+        start: function () {
+            this.history.start();
+    
+            return this;
+        },
+    
+        stop: function () {
+            this.history.stop();
+    
+            return this;
+        }
+    });
+    
+    Organic.history = new Organic.History();
+    
+    /**
+     * @class
      * @augments external:Backbone.Router
      */
     Organic.Router = Backbone.Router.extend({
@@ -1062,6 +1138,7 @@
     
             var wrappedRoute = _.bind(function () {
                 this.trigger('before:route');
+                Organic.history.add(window.location.hash);
                 callback.apply(this, arguments);
             }, this);
     

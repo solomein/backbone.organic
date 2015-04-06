@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "backbone": "1.0.0 - 1.1.2",
-    "underscore": "^1.6.0"
+    "underscore": "^1.8.0"
   },
   "devDependencies": {
     "chai": "^2.1.1",

@@ -3,7 +3,7 @@ describe('Organic.merge', function () {
 
     describe('when merging with parent', function () {
         beforeEach(function () {
-            this.defaultMergeProps = ['events', 'ui', 'triggers'];
+            this.defaultMergeProps = ['events', 'ui', 'triggers', 'modelEvents', 'collectionEvents'];
             this.customMergeProps = ['customProp'];
 
             this.ParentView = Organic.View.extend({
